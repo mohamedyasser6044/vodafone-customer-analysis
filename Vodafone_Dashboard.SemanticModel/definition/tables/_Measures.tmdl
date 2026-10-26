@@ -1,0 +1,280 @@
+table _Measures
+	lineageTag: ed341d6d-dacf-4c31-82cd-4cde98340eff
+
+	/// Year picked on the year buttons (2025 if none).
+	measure 'Selected Year' = SELECTEDVALUE(Years[Year], 2025)
+		formatString: 0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: d32708b1-c6bf-437d-a925-d73e55c780cb
+
+	measure Revenue = SUM(Fact_Monthly[Revenue_EGP])
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: 9e129158-820d-4d2b-ab04-1d7a387f8774
+
+	/// 1 row = 1 customer active in 1 month.
+	measure 'Subscriber Months' = COUNTROWS(Fact_Monthly)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: 0f1702ce-bd16-4638-81d8-4f0e19c8df1a
+
+	/// Average revenue per subscriber per month.
+	measure ARPU = DIVIDE([Revenue], [Subscriber Months])
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: 230d8558-c4e0-438a-ae61-9435e47de6bb
+
+	measure 'App Logins' = SUM(Fact_Monthly[AppLogins])
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: d6f14bd4-c1bf-4061-8e9b-6739e9a727cb
+
+	measure 'Data Used GB' = SUM(Fact_Monthly[DataUsed_GB])
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: aa06d526-44fb-4e8e-8079-e77a22750779
+
+	measure 'Quota GB' = SUM(Fact_Monthly[Quota_GB])
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: c14b1c1a-bd33-4448-91a8-24dd9c7363ee
+
+	measure Subscribers = DISTINCTCOUNT(Fact_Monthly[CustomerID])
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: ddebb3eb-c7d1-46f1-a498-dab32dff939f
+
+	measure 'Avg Days Between Payments' = AVERAGE(Fact_Payments[DaysSinceLastPayment])
+		formatString: 0.0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: 9889a088-0534-4c43-8289-583d727191e9
+
+	/// Average GB used per subscriber per month.
+	measure 'Avg GB per Subscriber' = DIVIDE([Data Used GB], [Subscriber Months])
+		formatString: 0.0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: 19c74b96-9aef-4ef6-a07f-00416d87577d
+
+	/// Share of the plan's GB that was used.
+	measure 'Quota Utilization' = DIVIDE([Data Used GB], [Quota GB])
+		formatString: 0%
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: 4277b3ce-1fd0-4140-9eb3-c7a3342271e8
+
+	/// Average app logins per subscriber per month.
+	measure 'Logins per Subscriber' = DIVIDE([App Logins], [Subscriber Months])
+		formatString: 0.0
+		displayFolder: Customers & Product Analysis\1 Base
+		lineageTag: ed1af793-629d-4052-a7bd-dedf35b62f45
+
+	measure 'Revenue CY' =
+			VAR y = [Selected Year]
+			RETURN CALCULATE([Revenue], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 718f161b-7aa3-4708-9ac4-ef52e701cc9b
+
+	measure 'Revenue PY' =
+			VAR y = [Selected Year] - 1
+			RETURN CALCULATE([Revenue], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: d353e74b-8ff1-4cfa-9d18-75aad12301b7
+
+	measure 'Revenue vs PY %' = DIVIDE([Revenue CY] - [Revenue PY], [Revenue PY])
+		formatString: 0.0%
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 433addb9-cfe3-4a11-ba8f-9d5b0ce8906b
+
+	measure 'Revenue vs PY Label' = FORMAT([Revenue vs PY %], "▲ 0.0%;▼ 0.0%") & " vs PY"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 75cc2481-7f84-4753-a0ed-58da6705b3d0
+
+	measure 'Revenue vs PY Color' = IF([Revenue vs PY %] >= 0, "#007C00", "#E60000")
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 3f85f626-ebb7-4b50-9773-9bce0a24655b
+
+	measure 'ARPU CY' =
+			VAR y = [Selected Year]
+			RETURN CALCULATE([ARPU], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: f3d7fdc4-c098-484a-ae14-975dc388bdb3
+
+	measure 'ARPU PY' =
+			VAR y = [Selected Year] - 1
+			RETURN CALCULATE([ARPU], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 7ac2575b-4995-49ab-8900-289acc622ff5
+
+	measure 'ARPU vs PY %' = DIVIDE([ARPU CY] - [ARPU PY], [ARPU PY])
+		formatString: 0.0%
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 51193a5d-0152-409d-a19a-cf56d1ef6c9e
+
+	measure 'ARPU vs PY Label' = FORMAT([ARPU vs PY %], "▲ 0.0%;▼ 0.0%") & " vs PY"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 3655d6a4-e6fb-4b5b-bd03-2472373ac982
+
+	measure 'ARPU vs PY Color' = IF([ARPU vs PY %] >= 0, "#007C00", "#E60000")
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: bdc14f06-4933-4f4f-995d-582c4ae67c6a
+
+	measure 'App Logins CY' =
+			VAR y = [Selected Year]
+			RETURN CALCULATE([App Logins], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 2ab60311-f16b-4675-b145-cdeeeab15f9a
+
+	measure 'App Logins PY' =
+			VAR y = [Selected Year] - 1
+			RETURN CALCULATE([App Logins], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 835cc411-c749-4e23-a1a0-9d786ed93b6b
+
+	measure 'App Logins vs PY %' = DIVIDE([App Logins CY] - [App Logins PY], [App Logins PY])
+		formatString: 0.0%
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: ac2136c2-9e30-4052-a9d7-6ee583beecce
+
+	measure 'App Logins vs PY Label' = FORMAT([App Logins vs PY %], "▲ 0.0%;▼ 0.0%") & " vs PY"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 56586164-32da-4270-89b2-d38becc13668
+
+	measure 'App Logins vs PY Color' = IF([App Logins vs PY %] >= 0, "#007C00", "#E60000")
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: d453eeca-f5da-4c7f-81ab-f5b40c5c56a9
+
+	measure 'Data Used GB CY' =
+			VAR y = [Selected Year]
+			RETURN CALCULATE([Data Used GB], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 682038f5-e78d-4674-96e8-c46948932ea9
+
+	measure 'Data Used GB PY' =
+			VAR y = [Selected Year] - 1
+			RETURN CALCULATE([Data Used GB], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: dc1b3fec-a71b-42ea-8aa8-4d36d8a1e7be
+
+	measure 'Data Used GB vs PY %' = DIVIDE([Data Used GB CY] - [Data Used GB PY], [Data Used GB PY])
+		formatString: 0.0%
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 63f69276-947a-44ee-a10e-31ac8dae5ab4
+
+	measure 'Data Used GB vs PY Label' = FORMAT([Data Used GB vs PY %], "▲ 0.0%;▼ 0.0%") & " vs PY"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: b73208f1-7233-425e-923f-b78ab1859e3f
+
+	measure 'Data Used GB vs PY Color' = IF([Data Used GB vs PY %] >= 0, "#007C00", "#E60000")
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: f4bd4176-003f-43d6-894d-5ecc323f6515
+
+	measure 'Subscribers CY' =
+			VAR y = [Selected Year]
+			RETURN CALCULATE([Subscribers], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: c8283b9f-eafd-4b91-b441-c3361df8b25f
+
+	measure 'Subscribers PY' =
+			VAR y = [Selected Year] - 1
+			RETURN CALCULATE([Subscribers], Dim_Date[Year] = y)
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: fe437a13-ba54-4248-b4d6-17e9e4b3fad9
+
+	measure 'Subscribers vs PY %' = DIVIDE([Subscribers CY] - [Subscribers PY], [Subscribers PY])
+		formatString: 0.0%
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 8a0ee3df-26fb-4f45-a53f-23a5c97b2d43
+
+	measure 'Subscribers vs PY Label' = FORMAT([Subscribers vs PY %], "▲ 0.0%;▼ 0.0%") & " vs PY"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: b37c38a1-aa07-465e-ae8d-ddabb4c57b2d
+
+	measure 'Subscribers vs PY Color' = IF([Subscribers vs PY %] >= 0, "#007C00", "#E60000")
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 8ea03fca-24ee-417a-b4c6-936ed1b4c878
+
+	measure 'Revenue CY Label' = "EGP " & FORMAT([Revenue CY] / 1000000, "0.0") & "M"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 3e97ca3c-3ad9-4a29-9e7e-cb0eed7a84eb
+
+	measure 'ARPU CY Label' = "EGP " & FORMAT([ARPU CY], "#,0")
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: f9cbca8a-f3e6-454f-adfe-ba96a9b480ee
+
+	measure 'App Logins CY Label' = FORMAT([App Logins CY] / 1000, "0.0") & "K"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 9ecc0b66-86f7-4b51-b2bb-a99bdadf90b1
+
+	measure 'Data Used GB CY Label' = FORMAT([Data Used GB CY] / 1000000, "0.00") & "M GB"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 7dcef379-0054-46b0-9bde-a2bdc317cc78
+
+	measure 'Subscribers CY Label' = FORMAT([Subscribers CY], "#,0")
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: ea93fa5f-c769-4b6d-a130-6a0cc736dd1f
+
+	measure 'Revenue vs PY Diff Label' =
+			VAR d = [Revenue CY] - [Revenue PY]
+			RETURN IF(d >= 0, "+", "-") & "EGP " & FORMAT(ABS(d) / 1000000, "0.0") & "M vs PY"
+		displayFolder: Customers & Product Analysis\2 KPI Cards
+		lineageTag: 28c02f58-f872-4e97-b396-f0100a68ad7b
+
+	measure 'Avg GB per Subscriber CY' =
+			VAR y = [Selected Year]
+			RETURN CALCULATE([Avg GB per Subscriber], Dim_Date[Year] = y)
+		formatString: 0.0 "GB"
+		displayFolder: Customers & Product Analysis\3 Charts
+		lineageTag: 03120933-262e-4f90-9cc7-5ec1e4c2eb8f
+
+	measure 'Quota Utilization CY' =
+			VAR y = [Selected Year]
+			RETURN CALCULATE([Quota Utilization], Dim_Date[Year] = y)
+		formatString: 0%
+		displayFolder: Customers & Product Analysis\3 Charts
+		lineageTag: 20360c6d-613c-498b-856e-883732b5a16f
+
+	/// Shows only the selected year and the year before (for the quarter trend).
+	measure 'Avg Days Between Payments 2Y' =
+			VAR y = [Selected Year]
+			VAR yr = SELECTEDVALUE(Dim_Date[Year])
+			RETURN IF(yr = y || yr = y - 1, [Avg Days Between Payments])
+		formatString: 0.0
+		displayFolder: Customers & Product Analysis\3 Charts
+		lineageTag: 3c817b71-90bc-42b3-a043-9019f3f7f2c6
+
+	/// Shows only the selected year and the year before (for the quarter trend).
+	measure 'ARPU 2Y' =
+			VAR y = [Selected Year]
+			VAR yr = SELECTEDVALUE(Dim_Date[Year])
+			RETURN IF(yr = y || yr = y - 1, [ARPU])
+		formatString: #,0
+		displayFolder: Customers & Product Analysis\3 Charts
+		lineageTag: 989bdeba-4784-4b7d-97e0-d712c283dcab
+
+	/// Shows only the selected year and the year before (for the quarter trend).
+	measure 'Logins per Subscriber 2Y' =
+			VAR y = [Selected Year]
+			VAR yr = SELECTEDVALUE(Dim_Date[Year])
+			RETURN IF(yr = y || yr = y - 1, [Logins per Subscriber])
+		formatString: 0.0
+		displayFolder: Customers & Product Analysis\3 Charts
+		lineageTag: 78d056ee-8f75-47c6-b6c2-46b789c07639
+
+	column Placeholder
+		lineageTag: 9ee1171e-bdba-4a18-a35a-70c6b99ff03e
+		isNameInferred
+		sourceColumn: [Placeholder]
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("Placeholder", BLANK())
+

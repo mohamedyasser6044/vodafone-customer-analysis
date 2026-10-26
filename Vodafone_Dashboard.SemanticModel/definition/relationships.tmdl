@@ -1,0 +1,20 @@
+relationship Fact_Monthly_CustomerID_Dim_Customer_CustomerID
+	fromColumn: Fact_Monthly.CustomerID
+	toColumn: Dim_Customer.CustomerID
+
+relationship Fact_Payments_CustomerID_Dim_Customer_CustomerID
+	fromColumn: Fact_Payments.CustomerID
+	toColumn: Dim_Customer.CustomerID
+
+relationship Fact_Monthly_PlanID_Dim_Plan_PlanID
+	fromColumn: Fact_Monthly.PlanID
+	toColumn: Dim_Plan.PlanID
+
+relationship Fact_Monthly_MonthDate_Dim_Date_Date
+	fromColumn: Fact_Monthly.MonthDate
+	toColumn: Dim_Date.Date
+
+relationship Fact_Payments_PaymentDate_Dim_Date_Date
+	fromColumn: Fact_Payments.PaymentDate
+	toColumn: Dim_Date.Date
+

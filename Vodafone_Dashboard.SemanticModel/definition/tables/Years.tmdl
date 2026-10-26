@@ -1,0 +1,12 @@
+table Years
+	lineageTag: 8f91685a-1848-4742-be88-215bf49c1fb7
+
+	column Year
+		lineageTag: d2ed3549-6469-458f-8053-86b262060c6a
+		isNameInferred
+		sourceColumn: [Year]
+
+	partition Years = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(2023, 2025, 1), "Year", [Value])
+
