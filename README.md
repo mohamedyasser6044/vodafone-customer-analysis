@@ -85,7 +85,6 @@ Star schema with two fact tables (`Fact_Monthly`, `Fact_Payments`) and three dim
 - `Vodafone_Dashboard.Report/` — the report page: 25 visuals, theme and background, saved as JSON (PBIR)
 - `Vodafone_Dashboard.SemanticModel/` — tables, relationships and all 48 DAX measures, saved as TMDL
 - `data/Vodafone_Simulated_Data_2022_2025.xlsx` — the data source (5 tables)
-- `design/` — the approved mockup and the page background image
 - `screenshots/` — the dashboard page from Power BI Desktop
 
 To open it, point the Excel data source in Power Query to where you saved `data/Vodafone_Simulated_Data_2022_2025.xlsx`, then refresh.
