@@ -76,18 +76,16 @@ Star schema with two fact tables (`Fact_Monthly`, `Fact_Payments`) and three dim
 - **DAX:** current-year / previous-year pattern with `SELECTEDVALUE` and `CALCULATE` over a disconnected year table; `DIVIDE` ratios (ARPU, quota utilization, logins per subscriber); `FORMAT` labels; a measure that returns a hex colour for green/red conditional formatting; "2Y" measures so the trend lines show exactly 8 quarters.
 - **Modelling:** star schema, marked date table, calculated columns with sort-by columns (quarter labels, plan size).
 - **Design:** mockup first, then build. Custom JSON theme (Vodafone red `#E60000`, dark grey `#4A4D4E`, green `#007C00`), background image, and 25 visuals placed at exact positions.
-- **Power BI Project (PBIP / PBIR):** the report and model are saved as text files (JSON and TMDL), so changes are readable in Git.
+- **Power BI Project (PBIP / PBIR):** the report visuals were written as JSON by a Python script, so all 25 visuals sit at exact positions.
 - **Python** (pandas, numpy) for data simulation and validation.
 
 ## Files
 
-- `Vodafone_Dashboard.pbip` — open this in Power BI Desktop. It loads the report and model from the two folders below.
-- `Vodafone_Dashboard.Report/` — the report page: 25 visuals, theme and background, saved as JSON (PBIR)
-- `Vodafone_Dashboard.SemanticModel/` — tables, relationships and all 48 DAX measures, saved as TMDL
+- `Vodafone_Dashboard.pbix` — the full Power BI file (open in Power BI Desktop)
 - `data/Vodafone_Simulated_Data_2022_2025.xlsx` — the data source (5 tables)
 - `screenshots/` — the dashboard page from Power BI Desktop
 
-To open it, point the Excel data source in Power Query to where you saved `data/Vodafone_Simulated_Data_2022_2025.xlsx`, then refresh.
+To refresh the data, point the Excel source in Power Query to where you saved `data/Vodafone_Simulated_Data_2022_2025.xlsx`.
 
 ## Author
 
