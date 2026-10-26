@@ -1,14 +1,12 @@
-# Vodafone Egypt — Customers & Product Analysis
+# Vodafone Egypt Customers & Product Analysis
 
-One-page Power BI dashboard, built in Vodafone's visual identity, that tracks **revenue, ARPU, app logins, data consumption and subscribers** for 2023–2025 against the previous year. Every chart title is written as the business question it answers.
+A one-page Power BI dashboard in Vodafone's colours. It tracks revenue, ARPU, app logins, data usage and subscribers for 2023 to 2025 and compares each year with the year before. I wrote each chart title as the question it answers.
 
-> **Simulated data.** All data was generated in Python for this portfolio project. It is not real Vodafone data, and the trends below come from rules built into the data generator.
+**Note:** the data is simulated. I generated it in Python for this project, so it is not real Vodafone data, and the trends come from the rules I set in the generator.
 
 ![Customers & Product Analysis dashboard](screenshots/dashboard.png)
 
-## Business questions
-
-The KPI row answers: *how did revenue, ARPU, app logins, data consumption and subscribers change versus the previous year?* The six charts answer:
+## Questions the dashboard answers
 
 - Which customer class brings the most revenue?
 - How many subscribers are still active?
@@ -17,76 +15,56 @@ The KPI row answers: *how did revenue, ARPU, app logins, data consumption and su
 - Do bigger plans bring more revenue?
 - Do ARPU and app use grow together?
 
-## The dashboard
-
-**Header.** Vodafone logo, title, and single-select year buttons (2023 / 2024 / 2025; 2025 when nothing is selected).
-
-**KPI cards.** Each card shows the selected year's value, a green/red "▲/▼ x% vs PY" line, and a monthly sparkline.
+The cards at the top show how each KPI changed compared with the previous year. You pick the year with the 2023 / 2024 / 2025 buttons.
 
 | KPI | 2025 | vs 2024 |
 |---|---|---|
-| Revenue | EGP 22.3M | ▲ 20.8% (+EGP 3.8M) |
-| ARPU (per subscriber / month) | EGP 340 | ▲ 9.4% |
-| App Logins (Ana Vodafone app) | 640.7K | ▲ 22.3% |
-| Consumption (mobile data) | 1.23M GB | ▲ 16.6% |
-| Subscribers (with activity) | 5,781 | ▲ 9.9% |
+| Revenue | EGP 22.3M | +20.8% |
+| ARPU (per subscriber per month) | EGP 340 | +9.4% |
+| App logins (Ana Vodafone app) | 640.7K | +22.3% |
+| Data used | 1.23M GB | +16.6% |
+| Subscribers | 5,781 | +9.9% |
 
-**Charts.**
-- **Revenue by customer class** — column chart, A+ to D, sorted high to low.
-- **Active vs suspended subscribers** — donut with count and share.
-- **Average GB per subscriber per month by class** — bar chart.
-- **Average days between payments** — quarterly line, selected year and the year before.
-- **Revenue and quota usage by plan size** — two bar charts (Small / Medium / Large) with a 100% "Full quota" reference line.
-- **ARPU and app logins per subscriber** — two stacked quarterly line charts.
+## What I found (2025 vs 2024)
 
-## Key findings (2025 vs 2024, simulated)
-
-- Revenue grew **20.8%** to EGP 22.27M, driven by more subscribers (+9.9%) and higher ARPU (+9.4%, EGP 310 → 340).
-- Customers pay more often: average days between payments fell from **29.6 to 27.8** (30.1 in Q1 '24 → 27.6 in Q4 '25).
-- **97.7%** of 2025 subscribers are active (5,647 active, 134 suspended).
-- A+ customers bring the most revenue (EGP 4.59M) and use the most data (52.7 GB / month, 10× class D).
-- Large plans bring the most revenue (EGP 11.54M), but **Small-plan customers use 104% of their quota** vs 70% for Large plans: a clear upsell signal.
-- ARPU and app use rise together: app logins per subscriber per month went from 8.9 (Q1 '24) to 10.4 (Q4 '25).
+- Revenue grew 20.8% to EGP 22.3M, from more subscribers (+9.9%) and higher ARPU (EGP 310 to 340).
+- Customers pay more often. The average gap between payments went down from 29.6 to 27.8 days.
+- 97.7% of subscribers are still active (5,647 active, 134 suspended).
+- A+ customers bring the most revenue (EGP 4.6M) and use the most data, 52.7 GB a month. That's about 10 times class D.
+- Large plans bring the most revenue, but customers on small plans use 104% of their quota, compared with 70% on large plans. They are good candidates for an upgrade.
+- ARPU and app use went up together. Logins per subscriber per month went from 8.9 to 10.4.
 
 ## Data
 
-`data/Vodafone_Simulated_Data_2022_2025.xlsx` — 5 Excel tables, January 2022 to December 2025 (2022 is there only so 2023 has a previous year). Currency: EGP.
+One Excel file with 5 tables, January 2022 to December 2025. I only included 2022 so that 2023 has a year to compare with. All amounts are in EGP.
 
-| Table | Rows | Grain |
+| Table | Rows | One row is |
 |---|---|---|
-| Fact_Monthly | 228,621 | one customer in one month (plan fee, extra charges, revenue, data used, quota, app logins) |
-| Fact_Payments | 231,401 | one payment (amount, method, days since last payment) |
-| Dim_Customer | 6,000 | one customer (gender, age group, governorate, type, class A+–D, join date, status) |
-| Dim_Plan | 8 | one plan: Flex 50–300 (prepaid, 3–30 GB) and RED 400–1000 (postpaid, 40–100 GB) |
+| Fact_Monthly | 228,621 | one customer in one month |
+| Fact_Payments | 231,401 | one payment |
+| Dim_Customer | 6,000 | one customer |
+| Dim_Plan | 8 | one plan (Flex 50 to 300 prepaid, RED 400 to 1000 postpaid) |
 | Dim_Date | 1,461 | one day |
 
-The data was validated with a Python script before loading: no nulls or duplicates, all foreign keys match, Revenue = Plan Fee + Extra Charges on every row, no records before a customer's join date, and suspended customers stop on their suspension date. Totals were checked again in Power BI with DAX queries.
+Before loading it, I checked the data with a Python script: no nulls or duplicates, all keys match, and revenue always equals plan fee plus extra charges. I checked the totals again in Power BI.
 
 ## Data model
 
-Star schema with two fact tables (`Fact_Monthly`, `Fact_Payments`) and three dimensions (`Dim_Customer`, `Dim_Plan`, `Dim_Date`), all many-to-one, single direction.
+A star schema with two fact tables (Fact_Monthly and Fact_Payments) and three dimensions (Dim_Customer, Dim_Plan, Dim_Date). A separate Years table drives the year buttons. All 48 measures are in one _Measures table.
 
-- `Dim_Date` is marked as the date table.
-- The plan links through `Fact_Monthly`, not `Dim_Customer`, to avoid ambiguous filter paths.
-- `Years` is a disconnected table (GENERATESERIES) that drives the year buttons.
-- All 48 measures sit in a `_Measures` table, in folders: Base, KPI Cards, Charts.
+## Tools
 
-## Techniques used
-
-- **DAX:** current-year / previous-year pattern with `SELECTEDVALUE` and `CALCULATE` over a disconnected year table; `DIVIDE` ratios (ARPU, quota utilization, logins per subscriber); `FORMAT` labels; a measure that returns a hex colour for green/red conditional formatting; "2Y" measures so the trend lines show exactly 8 quarters.
-- **Modelling:** star schema, marked date table, calculated columns with sort-by columns (quarter labels, plan size).
-- **Design:** mockup first, then build. Custom JSON theme (Vodafone red `#E60000`, dark grey `#4A4D4E`, green `#007C00`), background image, and 25 visuals placed at exact positions.
-- **Power BI Project (PBIP / PBIR):** the report visuals were written as JSON by a Python script, so all 25 visuals sit at exact positions.
-- **Python** (pandas, numpy) for data simulation and validation.
+- Power BI: Power Query, data modeling and DAX (current year vs previous year, ARPU, quota use, colour measures for green/red), with a custom theme and background
+- Python (pandas, NumPy) to generate and check the data
 
 ## Files
 
-- `Vodafone_Dashboard.pbix` — the full Power BI file (open in Power BI Desktop)
-- `data/Vodafone_Simulated_Data_2022_2025.xlsx` — the data source (5 tables)
-- `screenshots/` — the dashboard page from Power BI Desktop
+- `Vodafone_Dashboard.pbix` is the Power BI file
+- `data/Vodafone_Simulated_Data_2022_2025.xlsx` is the data
+- `screenshots/` has the dashboard image
 
-To refresh the data, point the Excel source in Power Query to where you saved `data/Vodafone_Simulated_Data_2022_2025.xlsx`.
+To refresh the data, change the Excel file path in Power Query to where you saved it.
 
-## Author
+## Contact
 
-Mohamed Yasser Kamal — [mohamedyasser6044@gmail.com](mailto:mohamedyasser6044@gmail.com)
+Mohamed Yasser Kamal, [mohamedyasser6044@gmail.com](mailto:mohamedyasser6044@gmail.com)
